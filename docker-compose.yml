@@ -6,8 +6,35 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
-      - 8081:8081
+      - 8085:8085
+#      - 8081:8081
     volumes:
       - ./evepraisal.toml:/evepraisal/evepraisal.toml
+      - ./db:/evepraisal/db
     restart: always
+    networks:
+      - evepraisal
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.evepraisal.entrypoints=http"
+      - "traefik.http.routers.evepraisal.rule=Host(`evepraisal.turbofeedorglory.com`)"
+      - "traefik.http.routers.evepraisal.service=evepraisal"
+      - "traefik.http.middlewares.evepraisal-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.evepraisal.middlewares=evepraisal-https"
+      - "traefik.http.routers.evepraisal-secure.entrypoints=https"
+      - "traefik.http.routers.evepraisal-secure.rule=Host(`evepraisal.turbofeedorglory.com`)"
+      - "traefik.http.routers.evepraisal-secure.tls=true"
+      - "traefik.http.routers.evepraisal-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.evepraisal-secure.service=evepraisal"
+      - "traefik.http.services.evepraisal.loadbalancer.server.port=8085"
+      - "traefik.docker.network=proxy"
+
+networks:
+  proxy:
+    external: true
+  evepraisal:
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.69.0/24 

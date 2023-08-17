@@ -1,11 +1,11 @@
-http_addr=":8080"
+http_addr=":8085"
 https_addr=""
 management_addr="127.0.0.1:8090"
 http_redirect=false
 letsencrypt_email=""
-https_domain-whitelist=["evepraisal.com"]
+https_domain-whitelist=["evepraisal.turbofeedorglory.com"]
 
-base-url="http://127.0.0.1:8080"
+base-url="http://evepraisal.turbofeedorglory.com"
 
 ad-block=""
 extra-js=""
